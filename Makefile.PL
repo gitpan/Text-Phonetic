@@ -7,7 +7,7 @@ WriteMakefile(
     NAME         => 'Text::Phonetic',
     VERSION_FROM => 'lib/Text/Phonetic.pm', # finds \$VERSION
     AUTHOR       => 'Maros Kollar (maros [at] k-1.com)',
-    ABSTRACT     => 'A module implementing various phonetic algorithm',
+    ABSTRACT     => 'A module implementing various phonetic algorithms',
     NO_META      => 1,
     PREREQ_PM    => {
                      'Test::Simple' => 0.44,
@@ -15,5 +15,6 @@ WriteMakefile(
                      'Text::Soundex' => 3,
                      'Text::Metaphone' => 0,
                      'Text::DoubleMetaphone' => 0,
+                     'Exporter::Lite' => 0,
                     },
 );

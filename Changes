@@ -1,6 +1,7 @@
 Revision history for Perl module Text::Phonetic
 
-0.01 Sun Nov 11 11:43:38 2007
+1.09 Sun Nov 11 2007
     - original version; created by ExtUtils::ModuleMaker 0.49
-
+1.01 Sun Dec 10 2007
+    - Corrected depenedicies in Makefile and META.yml, so that cpants tests don't fail
 

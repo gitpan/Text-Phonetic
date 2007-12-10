@@ -11,7 +11,9 @@ use Text::Unidecode;
 use Carp;
 
 use vars qw($VERSION);
-$VERSION = '1.00';
+$VERSION = '1.01';
+
+use 5.008000;
 
 # ----------------------------------------------------------------
 sub new
