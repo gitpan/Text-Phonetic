@@ -11,7 +11,7 @@ use Text::Unidecode;
 use Carp;
 
 use vars qw($VERSION);
-$VERSION = '1.01';
+$VERSION = '1.02';
 
 use 5.008000;
 
@@ -124,7 +124,7 @@ sub _compare_list
 
 =head1 NAME
 
-Text::Phonetic - A module implementing various phonetic algorithm
+Text::Phonetic - A module implementing various phonetic algorithms
 
 =head1 SYNOPSIS
 
@@ -241,7 +241,7 @@ then you'll automatically be notified of progress on your bug as I make changes.
     http://www.k-1.com
 
 =head1 COPYRIGHT
-
+�
 Text::Phonetic is Copyright (c) 2006,2007 Maroš. Kollár.
 All rights reserved.
 

@@ -10,7 +10,9 @@ WriteMakefile(
     ABSTRACT     => 'A module implementing various phonetic algorithms',
     NO_META      => 1,
     PREREQ_PM    => {
-                     'Test::Simple' => 0.44,
+                     'Test::Pod' => 0,
+                     'Test::More' => 0,
+                     'Test::Pod::Coverage' => 0,
                      'Text::Unidecode' => 0,
                      'Text::Soundex' => 3,
                      'Text::Metaphone' => 0,

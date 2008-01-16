@@ -4,6 +4,7 @@ LICENSE
 Todo
 Changes
 Makefile.PL
+META.yml
 lib/Text/Phonetic.pm
 lib/Text/Phonetic/Koeln.pm
 lib/Text/Phonetic/DaitchMokotoff.pm
