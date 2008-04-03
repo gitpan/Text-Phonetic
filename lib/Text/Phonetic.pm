@@ -11,7 +11,7 @@ use Text::Unidecode;
 use Carp;
 
 use vars qw($VERSION);
-$VERSION = '1.02';
+$VERSION = '1.03';
 
 use 5.008000;
 
@@ -65,7 +65,7 @@ sub compare
 		$string2 = unidecode($string2);
 		
 		# Also not very likely, but has to be checked
-		return 90 if ($string1 eq $string2);
+		return 99 if ($string1 eq $string2);
 	}
 	
 	return $obj->_do_compare($obj->_do_encode($string1),$obj->_do_encode($string2));
@@ -153,7 +153,7 @@ The module can easily be subclassed.
  
 You can pass arbitrary attributes to the constructor. The only global attribute
 is C<unidecode> which defaults to 1 if not set. This attribute controlls if 
-non-latin characters should be transliterated to A-Z.
+non-latin characters should be transliterated to A-Z (L<Text::Unidecode>).
 
 Additional attributes may be defined by subclasses.
 
@@ -174,8 +174,8 @@ array reference depending on the caller context and parameters.
  
 The return code is an integer between 100 and 0 indicating the likelihood that
 the to results are the same. 100 usually means that the strings are completely
-identical. 90 means that the strings match after all non-latin characters
-have been transliterated. Values in between 90 and 0 mean that the given strings
+identical. 99 means that the strings match after all non-latin characters
+have been transliterated. Values in between 98 and 0 mean that the given strings
 likely match. 0 means that the used alogorithm couldn't match the two strings at
 all.
 C<compare> is a shortcut to the C<$obj-&gt;_do_compare($CODE1,$CODE2)> method. 
@@ -183,8 +183,8 @@ C<compare> is a shortcut to the C<$obj-&gt;_do_compare($CODE1,$CODE2)> method.
 =head1 SUBLCASSING
 
 You can easily subclass Text::Phonetic and add your own phonetic algorithm.
-All subclasses have to use Text::Phonetic as their base class, and the following
-methods need to be implemented:
+All subclasses have to use Text::Phonetic as their base class, and the 
+following methods need to be implemented:
 
 =head2 _do_encode
 
@@ -197,9 +197,10 @@ string or some kind of reference)
 
  $RETURN_STRING = $obj->_do_compare($RESULT1,$RESULT2);
  
-If your C<_do_encode> method doesn't return a single string you also might need
-to implement a comparison method. It takes two results as returned by 
-C<_do_encode> and returns an integer value between 90 and 0 (see L<"compare">).
+If your C<_do_encode> method doesn't return a single scalar value you also 
+might need to implement a comparison method. It takes two results as returned
+by C<_do_encode> and returns an integer value between 98 and 0 
+(see L<"compare">).
 
 =head2 Object structure
 
@@ -216,7 +217,8 @@ construction.
  OR
  Text::Phonetic::_is_inlist($STRING,$LIST_REF);
  
-Returns a true value if $STRING is in the supplied list. Otherwise return false.
+Returns a true value if $STRING is in the supplied list. Otherwise returns
+false.
 
 =item _compare_list
 
@@ -231,7 +233,8 @@ Compares the two arrays and returns true if at least one element is equal
 
 Please report any bugs or feature requests to C<text-phonetic@rt.cpan.org>, or 
 through the web interface at L<http://rt.cpan.org>.  I will be notified, and 
-then you'll automatically be notified of progress on your bug as I make changes.
+then you'll automatically be notified of progress on your bug as I make 
+changes.
 
 =head1 AUTHOR
 
@@ -241,7 +244,7 @@ then you'll automatically be notified of progress on your bug as I make changes.
     http://www.k-1.com
 
 =head1 COPYRIGHT
-�
+
 Text::Phonetic is Copyright (c) 2006,2007 Maroš. Kollár.
 All rights reserved.
 

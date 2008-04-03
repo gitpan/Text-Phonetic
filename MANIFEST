@@ -13,6 +13,7 @@ lib/Text/Phonetic/Metaphone.pm
 lib/Text/Phonetic/Phonix.pm
 lib/Text/Phonetic/Soundex.pm
 lib/Text/Phonetic/SoundexNara.pm
+lib/Text/Phonetic/Phonem.pm
 t/global.pl
 t/001_load.t
 t/002_pod.t
@@ -21,3 +22,4 @@ t/004_wrapper.t
 t/005_koeln.t
 t/006_daitchmokotoff.t
 t/007_phonix.t
+t/008_phonem.t

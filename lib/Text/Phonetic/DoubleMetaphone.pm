@@ -10,8 +10,7 @@ use base qw(Text::Phonetic);
 use Text::DoubleMetaphone qw( double_metaphone );
 
 use vars qw($VERSION);
-$VERSION = '1.00';
-
+$VERSION = $Text::Phonetic::VERSION;
 
 # ----------------------------------------------------------------
 sub _do_compare

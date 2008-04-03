@@ -6,3 +6,7 @@ Revision history for Perl module Text::Phonetic
     - Corrected depenedicies in Makefile and META.yml, so that cpantesters tests don't fail
 1.02 Sun Dec 12 2007
     - Corrected depenedicies in Makefile and META.yml, so that cpantesters tests don't fail
+1.03 Sun Dec 12 2007
+    - Makefile not executable
+    - Documentation
+    - Added Text::Phonetic::Phonem

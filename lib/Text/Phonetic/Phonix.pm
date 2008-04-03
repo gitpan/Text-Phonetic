@@ -8,7 +8,7 @@ use utf8;
 use base qw(Text::Phonetic);
 
 use vars qw($VERSION @RULES $VOVEL $CONSONANT @VALUES);
-$VERSION = '1.00';
+$VERSION = $Text::Phonetic::VERSION;
 
 $VOVEL = '[AEIOU]';
 $CONSONANT = '[BCDFGHJLMNPQRSTVXZXY]';
@@ -237,8 +237,8 @@ Phonix is a phonetic algorithm similar to Soundex.
 
 The algorithm always returns an array reference with two elements. The fist
 element represents the sound of the name without the ending sound, and the 
-second element represents the ending sound. To get a full representation of the
-name you need to concat the two elements.
+second element represents the ending sound. To get a full representation of 
+the name you need to concat the two elements.
 
 If you want to compare two names the following rules apply:
 
@@ -251,8 +251,8 @@ the same, the retrieved name is a LIKELY candidate.
 does not, then the retrieved name is a LEAST-LIKELY candidate.
 
 =item * If the two ending-sound values are the same for the length of the 
-shorter, and the difference in length between the two ending-sound is one digit
-only, then the retrieved name isa LESS-LIKELY candidate.
+shorter, and the difference in length between the two ending-sound is one 
+digit only, then the retrieved name isa LESS-LIKELY candidate.
 
 =item * All other cases result in LEAST-LIKELY candidates.
 

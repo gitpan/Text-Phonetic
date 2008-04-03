@@ -8,7 +8,7 @@ use utf8;
 use base qw(Text::Phonetic);
 
 use vars qw($VERSION);
-$VERSION = '1.00';
+$VERSION = $Text::Phonetic::VERSION;
 
 # -------------------------------------------------------------
 sub _do_encode
@@ -23,7 +23,7 @@ sub _do_encode
 	
 	# Replace umlaut
 	$string =~ s/ß/S/g;
-	$string =~ s/[äA]/AE/g;
+	$string =~ s/[äÄ]/AE/g;
 	$string =~ s/[öÖ]/OE/g;
 	$string =~ s/[üÜ]/UE/g;
 	
@@ -208,8 +208,8 @@ LICENSE file included with this module.
 Description of the algorithm can be found at 
 L<http://de.wikipedia.org/wiki/K%C3%B6lner_Phonetik>
 
-Hans Joachim Postel: Die Kölner Phonetik. Ein Verfahren zur Identifizierung von 
-Personennamen auf der Grundlage der Gestaltanalyse. in: IBM-Nachrichten, 19. 
-Jahrgang, 1969, S. 925-931
+Hans Joachim Postel: Die Kölner Phonetik. Ein Verfahren zur Identifizierung 
+von Personennamen auf der Grundlage der Gestaltanalyse. in: IBM-Nachrichten, 
+19. Jahrgang, 1969, S. 925-931
 
 =cut

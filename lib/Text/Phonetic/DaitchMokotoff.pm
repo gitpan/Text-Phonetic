@@ -10,7 +10,7 @@ use base qw(Text::Phonetic);
 use Text::Metaphone;
 
 use vars qw($VERSION @RULES);
-$VERSION = '1.00';
+$VERSION = $Text::Phonetic::VERSION;
 
 @RULES = (
 	["SCHTSCH", 2, 4, 4],
@@ -242,8 +242,8 @@ Soundex algorithms designed to allow matching of Slavic and Yiddish surnames
 with similar pronunciation but differences in spelling. (Wikipedia, 2007)
 
 Some strings in the Daitch-Mokotoff algorithm produce ambigous results. 
-Therefore the results are always returned as Array references, even if there is 
-only one encoded version.
+Therefore the results are always returned as Array references, even if there 
+is only a single result.
 
 =head1 AUTHOR
 

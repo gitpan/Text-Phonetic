@@ -1,7 +1,7 @@
 --- #YAML:1.0
 name:  Text-Phonetic
 abstract: A module implementing various phonetic algorithms
-version: 1.02
+version: 1.03
 author:
   - Maroš Kollár <maros [at] k-1.com>
 license:             perl
@@ -15,7 +15,7 @@ requires:
 provides:
   Text::Phonetic:
     file: lib/Text/Phonetic.pm
-    version: 1.02
+    version: 1.03
   Text::Phonetic::Koeln:
     file: lib/Text/Phonetic/Koeln.pm
   Text::Phonetic::DaitchMokotoff:
@@ -30,6 +30,8 @@ provides:
     file: lib/Text/Phonetic/SoundexNara.pm
   Text::Phonetic::Phonix:
     file: lib/Text/Phonetic/Phonix.pm
+  Text::Phonetic::Phonem:
+    file: lib/Text/Phonetic/Phonem.pm
 build_requires:
   Test::Pod: 0
   Test::More: 0

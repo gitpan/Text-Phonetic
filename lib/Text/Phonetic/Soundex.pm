@@ -10,7 +10,7 @@ use base qw(Text::Phonetic);
 use Text::Soundex qw( soundex );
 
 use vars qw($VERSION);
-$VERSION = '1.00';
+$VERSION = $Text::Phonetic::VERSION;
 
 # -------------------------------------------------------------
 sub _do_encode

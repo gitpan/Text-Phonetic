@@ -10,7 +10,7 @@ use base qw(Text::Phonetic);
 use Text::Soundex qw( soundex_nara ); 
 
 use vars qw($VERSION);
-$VERSION = '1.00';
+$VERSION = $Text::Phonetic::VERSION;
 
 # -------------------------------------------------------------
 sub _do_encode
@@ -37,7 +37,7 @@ English. Soundex is the most widely known of all phonetic algorithms.
 Improvements to Soundex are the basis for many modern phonetic algorithms. 
 (Wikipedia, 2007)
 
-Tis special variant called "American Soundex" is used for US census data, and 
+This special variant called "American Soundex" is used for US census data, and 
 current maintained by the National Archives and Records Administration (NARA). 
 
 This module is a thin wrapper arround L<Text::Soundex>.
