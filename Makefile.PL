@@ -1,22 +1,20 @@
+# Load the Module::Install bundled in ./inc/
+use strict;
+use inc::Module::Install;
 
+# Define metadata
+name            'Text-Phonetic';
+all_from        'lib/Text/Phonetic.pm';
 
-use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
-WriteMakefile(
-    NAME         => 'Text::Phonetic',
-    VERSION_FROM => 'lib/Text/Phonetic.pm', # finds \$VERSION
-    AUTHOR       => 'Maros Kollar (maros [at] k-1.com)',
-    ABSTRACT     => 'A module implementing various phonetic algorithms',
-    NO_META      => 1,
-    PREREQ_PM    => {
-                     'Test::Pod' => 0,
-                     'Test::More' => 0,
-                     'Test::Pod::Coverage' => 0,
-                     'Text::Unidecode' => 0,
-                     'Text::Soundex' => 3,
-                     'Text::Metaphone' => 0,
-                     'Text::DoubleMetaphone' => 0,
-                     'Exporter::Lite' => 0,
-                    },
-);
+perl_version    '5.008';
+
+# Specific dependencies
+requires        'Text::Unidecode'       => 0;
+requires        'Text::Soundex'         => '3.00';
+requires        'Text::Metaphone'       => 0;
+requires        'Text::DoubleMetaphone' => 0;
+requires        'Exporter::Lite'        => 0;
+build_requires  'Test::Pod'             => 0;
+build_requires  'Test::Pod::Coverage'   => 0;
+
+WriteAll;

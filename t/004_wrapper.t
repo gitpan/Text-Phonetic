@@ -3,7 +3,6 @@
 # t/004_wrapper.t - check wrapped modules
 
 use Test::More tests=>19;
-use utf8;
 
 use Text::Phonetic::Soundex;
 use Text::Phonetic::SoundexNara;

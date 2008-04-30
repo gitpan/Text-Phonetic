@@ -69,6 +69,9 @@ Text::Phonetic::Phonem - Phonem algorithm
 
 =head1 DESCRIPTION
 
+The PHONEM algorithm is a simple substitution that was originally 
+implemented in dBase.
+
 Implementation of the PHONEM substitutions, as described in Georg Wilde and 
 Carsten Meyer, "Doppelgaenger gesucht - Ein Programm fuer kontextsensitive 
 phonetische Textumwandlung" from ct Magazin fuer Computer & Technik 25/1999.
@@ -90,9 +93,6 @@ The Perl implementation was written by Martin Wilz
     http://www.k-1.com
 
 =head1 COPYRIGHT
-
-Text::Phonetic::Phonem is Copyright (c) 2006,2007 Maroš. Kollár.
-All rights reserved.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.

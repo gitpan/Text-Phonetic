@@ -18,7 +18,8 @@ sub test_encode {
 		for (0..(scalar @$expect -1)) {		
 			next if (! defined $expect->[$_] && ! defined $result->[$_]);	
 			unless ($expect->[$_] eq $result->[$_]) {
-				fail($name.' got '. $result->[$_]);
+				fail($name.' got '. $result->[$_].' for pos '.$_);
+				return;
 			}
 		}
 		pass($name);

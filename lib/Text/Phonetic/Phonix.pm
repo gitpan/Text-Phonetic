@@ -7,13 +7,15 @@ use utf8;
 
 use base qw(Text::Phonetic);
 
-use vars qw($VERSION @RULES $VOVEL $CONSONANT @VALUES);
+use vars qw($VERSION @RULES $VOVEL $VOVEL_WITHY $CONSONANT @VALUES);
 $VERSION = $Text::Phonetic::VERSION;
 
 $VOVEL = '[AEIOU]';
+$VOVEL_WITHY = '[AEIOUY]';
 $CONSONANT = '[BCDFGHJLMNPQRSTVXZXY]';
 
 @VALUES = (
+    [qr/[AEIOUHWY]/,0],
 	[qr/[BP]/,1],
 	[qr/[CGJKQ]/,2],
 	[qr/[DT]/,3],
@@ -37,8 +39,8 @@ $CONSONANT = '[BCDFGHJLMNPQRSTVXZXY]';
 	[qr/NC/,'NK'],
 	[qr/CT/,'KT'],
 	[qr/PH/,'F'],
+	[qr/AA/,'AR'], #neu
 	[qr/SCH/,'SH'],
-	
 	[qr/BTL/,'TL'],
 	[qr/GHT/,'T'],
 	[qr/AUGH/,'ARF'],
@@ -52,13 +54,12 @@ $CONSONANT = '[BCDFGHJLMNPQRSTVXZXY]';
 	[qr/GHNE/,'NE'],
 	[qr/GNES$/,'NS'],
 	[qr/^GN/,'N'],
-	[qr/(\w)GN($CONSONANT)/,'1N2'],
+	[qr/(\w)GN($CONSONANT)v/,'1N2'],
 	[qr/^PS/,'S'],
 	[qr/^PT/,'T'],
 	[qr/^CZ/,'C'],
 	[qr/($VOVEL)WZ(\w)/,'1Z2'],
-	[qr/(\w)CZ(\w)/,'1CZ2'],
-	
+	[qr/(\w)CZ(\w)/,'1CH2'],
 	[qr/LZ/,'LSH'],
 	[qr/RZ/,'RSH'],
 	[qr/(\w)Z($VOVEL)/,'1S2'],
@@ -77,13 +78,12 @@ $CONSONANT = '[BCDFGHJLMNPQRSTVXZXY]';
 	[qr/DT$/,'T'],
 	[qr/(T|D)L$/,'1IL'],
 	[qr/YTH/,'ITH'],
-	
 	[qr/^TS?J($VOVEL)/,'CH1'],
 	[qr/^TS($VOVEL)/,'T1'],
-	[qr/TCH/,'CHE'],
+	[qr/TCH/,'CH'], # old che
 	[qr/^($VOVEL)WSK/,'1VSIKE'],
 	[qr/^[PM]N($VOVEL)/,'N1'],
-	[qr/($VOVEL)STL/,'1SL'], ## ????
+	[qr/($VOVEL)STL/,'1SL'],
 	[qr/TNT$/,'ENT'],
 	[qr/EAUX$/,'OH'],
 	[qr/EXCI/,'ECS'],
@@ -94,7 +94,6 @@ $CONSONANT = '[BCDFGHJLMNPQRSTVXZXY]';
 	[qr/ZS/,'S'],
 	[qr/($VOVEL)H?R($CONSONANT)/,'1AH2'],
 	[qr/($VOVEL)HR$/,'1AH'],
-	
 	[qr/RE$/,'AR'],
 	[qr/($VOVEL)R$/,'1AH'],
 	[qr/LLE/,'LE'],
@@ -109,33 +108,55 @@ $CONSONANT = '[BCDFGHJLMNPQRSTVXZXY]';
 
 );
 
-# ----------------------------------------------------------------
-sub _do_compare
-# ----------------------------------------------------------------
-{
-	my $obj = shift;
-	my $result1 = shift;
-	my $result2 = shift;
-
-	# Main values are different
-	return 0 unless ($result1->[0] eq $result2->[0]);
-	
-	# Ending values the same
-	return 75 if ($result1->[1] eq $result2->[1]);
-	
-	# Ending values differ in length, and are same for the shorter
-	my $length1 = length $result1->[1];
-	my $length2 = length $result2->[1];
-	if ($length1 > $length2
-		&& $length1 - $length2 == 1) {
-		return 50 if (substr($result1->[1],0,$length2) eq $result2->[1]);
-	 }elsif ($length2 > $length1
-		&& $length2 - $length1 == 1) {	
-		return 50 if (substr($result2->[1],0,$length1) eq $result1->[1]);
-	}
-	
-	return 25;
-}
+## ----------------------------------------------------------------
+#sub _do_compare
+## ----------------------------------------------------------------
+#{
+#	my $obj = shift;
+#	my $result1 = shift;
+#	my $result2 = shift;
+#
+#	# Main values are different
+#	return 0 unless ($result1->[0] eq $result2->[0]);
+#	
+#	# Ending values the same
+#	return 75 if ($result1->[1] eq $result2->[1]);
+#	
+#	# Ending values differ in length, and are same for the shorter
+#	my $length1 = length $result1->[1];
+#	my $length2 = length $result2->[1];
+#	if ($length1 > $length2
+#		&& $length1 - $length2 == 1) {
+#		return 50 if (substr($result1->[1],0,$length2) eq $result2->[1]);
+#	 }elsif ($length2 > $length1
+#		&& $length2 - $length1 == 1) {	
+#		return 50 if (substr($result2->[1],0,$length1) eq $result1->[1]);
+#	}
+#	
+#	return 25;
+#}
+#The algorithm always returns either a scalar value or an array reference with 
+#two elements. The fist element represents the sound of the name without the 
+#ending sound, and the second element represents the ending sound. To get a 
+#full representation of the name you need to concat the two elements.
+#
+#If you want to compare two names the following rules apply:
+#
+#=over
+#
+#=item * If the ending sound values of an entered name and a retrieved name are 
+#the same, the retrieved name is a LIKELY candidate.
+#
+#=item * If an entered name has an ending-sound value, and the retrieved name 
+#does not, then the retrieved name is a LEAST-LIKELY candidate.
+#
+#=item * If the two ending-sound values are the same for the length of the 
+#shorter, and the difference in length between the two ending-sound is one 
+#digit only, then the retrieved name isa LESS-LIKELY candidate.
+#
+#=item * All other cases result in LEAST-LIKELY candidates.
+#
+#=back
 
 # -------------------------------------------------------------
 sub _do_encode
@@ -144,42 +165,53 @@ sub _do_encode
 	my $obj = shift;
 	my $string = shift;
 	
+	my ($original_string, $last_string, $first_char);
+	$original_string = $string;
+	
+	# To uppercase and remove other characters
 	$string = uc($string);
 	$string =~ tr/A-Z//cd;
 	
-	# RULE 1
+	# RULE 1: Replcace rule
 	foreach my $rule (@RULES) {
 		my $regexp = $rule->[0];
 		my $replace = $rule->[1];
 		$string =~ s/$regexp/_replace($replace,$1,$2)/ge;
 	}
 	
-	# RULE 2
-	$string =~ s/^([A-Z])//;
-	my $first_char = $1;
-	# RULE 3
-	$first_char = 'v' if $first_char =~ m/$VOVEL/ || $first_char eq 'H';
+    # RULE 2: Fetch first character
+	$first_char = substr($string,0,1,'');
+	
+	# RULE 3: Exceptions for first character rule
+	if (grep { $first_char eq $_ } qw(A E I O U Y)) {
+	    $first_char = 'v';
+	    $string =~ s/^$VOVEL_WITHY//;
+	} elsif ($first_char eq 'W' || $first_char eq 'H') {
+	    #$string =~ s/^[WH]//;
+	}
+	
 	# RULE 4
 	$string =~ s/ES$/S/;
 	# RULE 5
-	$string =~ s/([AIOUY])$/$1E/;
+	$string =~ s/($VOVEL_WITHY)$/$1E/;
 	# RULE 6
-	$string =~ s/\w$//;
+	#$string =~ s/\w$//; # This rule seems kind of strict
 	# RULE 7-8
-	$string =~ s/([AEIOUY])([A-Z]+)$/$1/;
-	my $last_string =$2;
+#	if ($string =~ s/($VOVEL_WITHY)([A-Z]+)$/$2/) {
+#	    # RULE 13
+#	    $last_string = _transform($2);
+#	}
+	
 	# RULE 9-11
-	$string = _transform($string);
+    $string = _transform($string);
+
 	# RULE 12
 	$string = $first_char.$string;
-	# RULE 13
-	$last_string = _transform($last_string);
 	
-	$string .= $last_string;
+	#$string .= $last_string if (defined $last_string);
 	$string .= '0'  x (8-length $string);
 	$string = substr($string,0,8);
 	
-	#return [$string,$last_string];
 	return $string;
 }
 
@@ -223,40 +255,15 @@ sub _replace
 
 Text::Phonetic::Phonix - Phonix algorithm
 
-=head1 WARNING
-
-Since I have only found ambiguous sources about this algorithm this
-implementation doesn't behave fully according to the few test cases I was able
-to find (currently three out of 17 test cases fail). I'm looking for more and 
-better specifications of this algorithm. Until then this module should be 
-regarded as EXPERIMENTAL.
-
 =head1 DESCRIPTION
 
-Phonix is a phonetic algorithm similar to Soundex.
+Phonix is an improved version of Soundex, developed by T.N. Gadd. Phonix 
+has been incorporated into a number of WAIS implementations, including 
+freeWAIS
 
-The algorithm always returns an array reference with two elements. The fist
-element represents the sound of the name without the ending sound, and the 
-second element represents the ending sound. To get a full representation of 
-the name you need to concat the two elements.
-
-If you want to compare two names the following rules apply:
-
-=over
-
-=item * If the ending sound values of an entered name and a retrieved name are 
-the same, the retrieved name is a LIKELY candidate.
-
-=item * If an entered name has an ending-sound value, and the retrieved name 
-does not, then the retrieved name is a LEAST-LIKELY candidate.
-
-=item * If the two ending-sound values are the same for the length of the 
-shorter, and the difference in length between the two ending-sound is one 
-digit only, then the retrieved name isa LESS-LIKELY candidate.
-
-=item * All other cases result in LEAST-LIKELY candidates.
-
-=back
+There seem to be two variants of the Phonix algorithm. One which also includes
+the first letter in the numeric code, and one that doesn't. This module is
+using the later variant.
 
 =head1 AUTHOR
 
