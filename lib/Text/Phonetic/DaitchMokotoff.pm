@@ -7,8 +7,6 @@ use utf8;
 
 use base qw(Text::Phonetic);
 
-use Text::Metaphone;
-
 use vars qw($VERSION @RULES);
 $VERSION = $Text::Phonetic::VERSION;
 
@@ -143,7 +141,8 @@ sub _do_compare
 	my $result1 = shift;
 	my $result2 = shift;
 
-	return Text::Phonetic::_compare_list($result1,$result2);	
+	return 50 
+	   if Text::Phonetic::_compare_list($result1,$result2);	
 
 	return 0;
 }
@@ -226,6 +225,8 @@ sub _add_result
 }
 
 1;
+
+=encoding utf8
 
 =pod
 

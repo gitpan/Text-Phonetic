@@ -11,7 +11,7 @@ use Text::Unidecode;
 use Carp;
 
 use vars qw($VERSION);
-$VERSION = '1.04';
+$VERSION = '1.05';
 
 use 5.008000;
 
@@ -41,10 +41,12 @@ sub encode
 	} elsif (scalar(@_) > 1) {
 		my @result_list;
 		foreach my $string (@_) {
-			$string = unidecode($string) if ($obj->{'unidecode'});
-			push @result_list,$obj->_do_encode($string);
+		    my $string_decode = ($obj->{'unidecode'}) ? 
+		        unidecode($string) : 
+		        $string;
+			push @result_list,$obj->_do_encode($string_decode);
 		}
-		return wantarray ? @result_list:\@result_list;
+		return wantarray ? @result_list : \@result_list;
 	}
 	return;
 }
@@ -118,7 +120,9 @@ sub _compare_list
 	return 0;
 }
 
-1;
+"Schmitt ~ Smith ~ Schmitz";
+
+=encoding utf8
 
 =pod
 
@@ -233,9 +237,10 @@ Compares the two arrays and returns true if at least one element is equal
 =head1 SUPPORT
 
 Please report any bugs or feature requests to C<text-phonetic@rt.cpan.org>, or 
-through the web interface at L<http://rt.cpan.org>.  I will be notified, and 
-then you'll automatically be notified of progress on your bug as I make 
-changes.
+through the web interface at 
+L<http://rt.cpan.org/Public/Bug/Report.html?Queue=Text::Phonetic>.  
+I will be notified, and then you'll automatically be notified of progress on 
+your report as I make changes.
 
 =head1 AUTHOR
 
