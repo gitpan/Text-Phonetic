@@ -11,7 +11,7 @@ use Text::Unidecode;
 use Carp;
 
 use vars qw($VERSION);
-$VERSION = '1.05';
+$VERSION = '1.06';
 
 use 5.008000;
 
@@ -34,22 +34,23 @@ sub encode
 {
 	my $obj = shift;
 
+    # Single value
 	if (scalar(@_) == 1) {
 		my $string = shift;
 		$string = unidecode($string) if ($obj->{'unidecode'});
 		return $obj->_do_encode($string);
+	# Expand list
 	} elsif (scalar(@_) > 1) {
-		my @result_list;
-		foreach my $string (@_) {
-		    my $string_decode = ($obj->{'unidecode'}) ? 
-		        unidecode($string) : 
-		        $string;
-			push @result_list,$obj->_do_encode($string_decode);
-		}
+	    my @result_list;
+	    foreach my $string (@_) {
+	        push @result_list,$obj->encode($string);
+	    }
 		return wantarray ? @result_list : \@result_list;
 	}
+	# Fallback
 	return;
 }
+
 
 # ----------------------------------------------------------------
 sub compare
@@ -88,6 +89,37 @@ sub _do_compare
 # ================================================================
 # Utility functions
 # ================================================================
+
+## ----------------------------------------------------------------
+#sub _reduce_list
+## ----------------------------------------------------------------
+#{
+#    my @list = @_;
+#    
+#    my $is_ref = 0;
+#    my $is_string = 0;
+#    
+#    foreach (@list) {
+#        if (ref $_) {
+#            $is_ref = 1;
+#        } else {
+#            $is_string = 1;
+#        }
+#    }
+#        
+#    if ($is_ref && $is_string) {
+#        die('Return type mismatch')
+#    }
+#    
+#    if ($is_ref) {
+#        
+#    }
+#    
+#    if ($is_string) {
+#        return join ' ',@list;
+#    }
+#}
+
 
 # ----------------------------------------------------------------
 sub _is_inlist
@@ -195,8 +227,8 @@ following methods need to be implemented:
 
  $RESULT = $obj->_do_encode($STRING);
 
-This method does the actual encoding. It should return only one element. (eg.
-string or some kind of reference)
+This method does the actual encoding. It should return either a string or
+an array reference.
 
 =head2 _do_compare
 
