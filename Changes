@@ -1,5 +1,9 @@
 Revision history for Perl module Text::Phonetic
 
+1.07 Thu Oct 20 2008
+    - Fixed warnings on empty strings (reported by Jürgen Peters)
+    - Returns undef on empty strings
+
 1.06 Thu Jul 16 2008
     - Fixed rule bug in T::P::Phonix (reported by Bart Massey)
 
