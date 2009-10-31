@@ -31,4 +31,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/maros/Text-Phonetic.git
-version: 2.010
+version: 2.020
