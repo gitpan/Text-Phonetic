@@ -4,13 +4,13 @@ package Text::Phonetic;
 use Moose;
 use utf8;
 
-use Text::Unidecode;
+use Text::Unidecode qw();
 use Carp;
 use Module::Find;
 
 use version;
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = version->new("2.02");
+our $VERSION = version->new("2.03");
 
 use 5.008000;
 
@@ -26,6 +26,11 @@ has 'unidecode' => (
     documentation   => q[Transliterate strings to ASCII before processing]
 );
 
+after 'BUILDARGS' => sub { 
+    my ($class) = @_;
+    $class->check_predicates;
+};
+
 __PACKAGE__->meta->make_immutable;
 
 # ----------------------------------------------------------------------------
@@ -40,6 +45,22 @@ sub register_algorithm {
     push @AVAILABLE_ALGORITHMS,$algorithm
         unless grep { $algorithm eq $_ } @AVAILABLE_ALGORITHMS;
     return $algorithm;
+}
+
+sub check_predicates {
+    my ($class) = @_;
+    
+    if ($class->can('_predicates')) {
+        my @predicates = $class->_predicates;
+        foreach my $predicate (@predicates) {
+            my $ok = eval {
+                Class::MOP::load_class($predicate);
+            };
+            if (! $ok || $@) {
+                croak("Could not load '$class' phonetic algorithm: Predicate '$predicate' is missing")
+            }
+        }
+    }
 }
 
 # ----------------------------------------------------------------------------
@@ -60,11 +81,13 @@ sub load {
         my $ok = eval {
             Class::MOP::load_class($class);
         };
-        unless ($ok) {
+        if (! $ok || $@) {
             my $error = $@ || 'Unknown error while loading '.$class;
             croak("Could not load '$algorithm' phonetic algorithm: $error")
         }
     }
+    
+    $class->check_predicates;
     
     return $class->new($params);
 }
@@ -275,6 +298,12 @@ If your C<_do_encode> method doesn't return a single scalar value you also
 might need to implement a comparison method. It takes two results as returned
 by C<_do_encode> and returns an integer value between 98 and 0 
 (see L<"compare">).
+
+=head2 _predicates
+
+Third party modules can be marked as predicates by adding the C<_predicates>
+method whick should return al list of package names. All predicates will be
+loaded if installed. If missing an exception will be thrown.
 
 =head2 Object structure
 
