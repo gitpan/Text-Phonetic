@@ -10,11 +10,12 @@ use Module::Find;
 
 use version;
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = version->new("2.03");
+our $VERSION = version->new("2.04");
 
 use 5.008000;
 
 our $DEFAULT_ALGORITHM = 'Phonix';
+our @PREDICATES_CHECKED;
 our @AVAILABLE_ALGORITHMS = grep { s/^Text::Phonetic::(.+)$/$1/x } 
     findsubmod Text::Phonetic;
 
@@ -50,14 +51,15 @@ sub register_algorithm {
 sub check_predicates {
     my ($class) = @_;
     
-    if ($class->can('_predicates')) {
+    if ($class->can('_predicates')
+        && ! grep { $class eq $_ } @PREDICATES_CHECKED) {
         my @predicates = $class->_predicates;
         foreach my $predicate (@predicates) {
-            my $ok = eval {
-                Class::MOP::load_class($predicate);
-            };
-            if (! $ok || $@) {
+            my $ok = Class::Load::try_load_class($predicate);
+            unless ($ok) {
                 croak("Could not load '$class' phonetic algorithm: Predicate '$predicate' is missing")
+            } else {
+                push(@PREDICATES_CHECKED,$class);
             }
         }
     }
@@ -77,12 +79,9 @@ sub load {
         croak("Could not load '$algorithm' phonetic algorithm: Algorithm not available");
     }
     
-    unless (Class::MOP::is_class_loaded($class)) {
-        my $ok = eval {
-            Class::MOP::load_class($class);
-        };
-        if (! $ok || $@) {
-            my $error = $@ || 'Unknown error while loading '.$class;
+    unless (Class::Load::is_class_loaded($class)) {
+        my ($ok,$error) = Class::Load::try_load_class($class);
+        unless ($ok) {
             croak("Could not load '$algorithm' phonetic algorithm: $error")
         }
     }
@@ -92,14 +91,11 @@ sub load {
     return $class->new($params);
 }
 
-
-
 # ----------------------------------------------------------------------------
 # Public methods
 
 sub encode {
     my $self = shift;
-    
     
     # Single value
     if (scalar(@_) == 1) {
@@ -128,7 +124,7 @@ sub compare {
     return 0 unless defined $string1 && $string1 !~ /^\s*$/;
     return 0 unless defined $string2 && $string2 !~ /^\s*$/;
 
-    # Extremely rare case ;-)    
+    # Extremely rare case ;-)
     return 100 if ($string1 eq $string2);
 
     if ($self->unidecode) {
@@ -213,13 +209,13 @@ Or
   $encoded_string = $phonetic->encode($string);
 
 This module provides an easy and convinient way to encode names with various 
-phonetic algorithms. It acts as a wrapper arround other phonetic algorithm
+phonetic algorithms. It acts as a wrapper around other phonetic algorithm
 modules like L<Text::Metaphone>, L<Text::DoubleMetaphone>, L<Text::Soundex>
 and also implements some other algorithms such as 
 L<Text::Phonetic::DaitchMokotoff>, L<Text::Phonetic::Koeln>,
 L<Text::Phonetic::Phonem> and L<Text::Phonetic::Phonix>. 
 
-The module can easily be subclassed.
+This module can easily be subclassed.
 
 =head1 DESCRIPTION
 
@@ -238,7 +234,7 @@ Additional attributes may be defined by the various implementation classes.
 
 =head3 load
 
- $obj = Text::Phonetic->new(algorithm => $algorithm, %PARAMETERS)
+ $obj = Text::Phonetic->load(algorithm => $algorithm, %PARAMETERS)
 
 Alternative constructor which also loads the requested algorithm subclass.
 
@@ -302,7 +298,7 @@ by C<_do_encode> and returns an integer value between 98 and 0
 =head2 _predicates
 
 Third party modules can be marked as predicates by adding the C<_predicates>
-method whick should return al list of package names. All predicates will be
+method which should return al list of package names. All predicates will be
 loaded if installed. If missing an exception will be thrown.
 
 =head2 Object structure
@@ -310,17 +306,6 @@ loaded if installed. If missing an exception will be thrown.
 Text::Phonetic uses L<Moose> to declare attributes.
 
 =head2 Helper class methods
-
-=over 2
-
-=item _is_inlist
-
- Text::Phonetic::_is_inlist($STRING,@LIST);
- OR
- Text::Phonetic::_is_inlist($STRING,$LIST_REF);
- 
-Returns a true value if $STRING is in the supplied list. Otherwise returns
-false.
 
 =item _compare_list
 
@@ -342,13 +327,14 @@ Compares the two arrays and returns true if at least one element is equal
     isa => 'Str',
  );
  
- __PACKAGE__->meta->make_immutable;
- 
  sub _do_encode {
      my ($self,$string) = @_;
      # Do something
      return $phonetic_representation;
  }
+ 
+ __PACKAGE__->meta->make_immutable;
+ no Moose;
  1;
 
 =head1 SEE ALSO
@@ -369,16 +355,17 @@ your report as I make changes.
     Maroš Kollár
     CPAN ID: MAROS
     maros [at] k-1.com
+    
     http://www.k-1.com
 
 =head1 COPYRIGHT
 
-Text::Phonetic is Copyright (c) 2006,2007 Maroš. Kollár.
+Text::Phonetic is Copyright (c) 2006-2012 Maroš Kollár 
+- L<http://www.k-1.com>
 
-This program is free software; you can redistribute
-it and/or modify it under the same terms as Perl itself.
+=head1 LICENCE
 
-The full text of the license can be found in the
-LICENSE file included with this module.
+This library is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
