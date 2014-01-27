@@ -24,7 +24,7 @@ recommends:
   Text::DoubleMetaphone: 0
   Text::Metaphone: 0
 requires:
-  Module::Find: 0
+  Module::Find: 0.11
   Moose: 0.92
   Text::Soundex: 3.03
   Text::Unidecode: 0
@@ -32,4 +32,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: git://github.com/maros/Text-Phonetic.git
-version: 2.040
+version: 2.05

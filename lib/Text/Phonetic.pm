@@ -8,9 +8,8 @@ use Text::Unidecode qw();
 use Carp;
 use Module::Find;
 
-use version;
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = version->new("2.04");
+our $VERSION = "2.05";
 
 use 5.008000;
 
@@ -263,7 +262,7 @@ identical. 99 means that the strings match after all non-latin characters
 have been transliterated. Values in between 98 and 1 usually mean that the 
 given strings match. 0 means that the used alogorithm couldn't match the two 
 strings at all.
-C<compare> is a shortcut to the C<$obj-&gt;_do_compare($CODE1,$CODE2)> method.
+C<compare> is a shortcut to the C<$obj-E<gt>_do_compare($CODE1,$CODE2)> method.
 
 =head2 Class Methods
 
@@ -307,14 +306,12 @@ Text::Phonetic uses L<Moose> to declare attributes.
 
 =head2 Helper class methods
 
-=item _compare_list
+=head3 _compare_list
 
  Text::Phonetic::_compare_list($LIST1_REF,$LIST2_REF);
 
 Compares the two arrays and returns true if at least one element is equal 
 (ignoring the position) in both lists.  
-
-=back
 
 =head2 Example class
 
